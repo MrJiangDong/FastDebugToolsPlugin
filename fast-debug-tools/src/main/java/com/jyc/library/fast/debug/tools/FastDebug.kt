@@ -11,8 +11,4 @@ annotation class FastDebug(val name: String, val desc: String)
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class FastDebugEnable(val isEnable: Boolean = true)
-
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class FastToolsFunction
+annotation class FastDebugEnable(val isEnable: Boolean = true, val order: Int = 1)

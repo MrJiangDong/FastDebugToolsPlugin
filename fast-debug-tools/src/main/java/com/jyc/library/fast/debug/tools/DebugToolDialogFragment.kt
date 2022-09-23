@@ -21,8 +21,7 @@ import java.lang.reflect.Method
 /// 创建日期：2021/8/21
 /// 描述：DebugToolDialogFragment
 class DebugToolDialogFragment : AppCompatDialogFragment() {
-    private val debugTools = arrayOf(DebugTools::class.java)
-    private var recyclerView : RecyclerView? = null
+    private var recyclerView: RecyclerView? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,39 +51,8 @@ class DebugToolDialogFragment : AppCompatDialogFragment() {
             )!!
         )
 
-        val functions = mutableListOf<DebugFunction>()
-        val size = debugTools.size
-        for (index in 0 until size) {
-            val clazz = debugTools[index]
-            val target = clazz.getConstructor().newInstance()
-
-            val declaredMethods = target.javaClass.declaredMethods
-
-            for (method in declaredMethods) {
-                //标记位忽略 直接返回
-                if (method.getAnnotation(FastToolsFunction::class.java) == null) {
-                    continue
-                }
-
-                var title = ""
-                var desc = ""
-                var enable = false
-                val annotation = method.getAnnotation(FastDebug::class.java)
-
-                if (annotation != null) {
-                    title = annotation.name
-                    desc = annotation.desc
-                    enable = true
-                } else {
-                    method.isAccessible = true
-                    title = method.invoke(target) as String
-                }
-
-                val func = DebugFunction(title, desc, method, enable, target)
-                functions.add(func)
-            }
-        }
-
+        //去解析定义好的功能
+        val functions = DebugToolsParse().parse()
         recyclerView?.addItemDecoration(itemDecoration)
         recyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -124,18 +92,6 @@ class DebugToolDialogFragment : AppCompatDialogFragment() {
             return list.size
         }
 
-    }
-
-    data class DebugFunction(
-        val name: String,
-        val desc: String,
-        val method: Method,
-        val enable: Boolean,
-        val target: Any
-    ) {
-        fun invoke() {
-            method.invoke(target)
-        }
     }
 
     private fun getDisplayWidthInPx(context: Context?): Int {

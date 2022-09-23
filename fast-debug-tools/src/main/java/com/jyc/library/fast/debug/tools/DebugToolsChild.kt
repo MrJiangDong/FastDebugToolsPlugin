@@ -8,7 +8,7 @@ import android.os.Process
 /// @author jyc
 /// 创建日期：2021/8/21
 /// 描述：DebugTools
-open class DebugTools : DebugToolsFunInterface{
+class DebugToolsChild : DebugTools(){
     private val debugToolsLogic : DebugToolsLogic = DebugToolsLogic()
 
     @FastDebugEnable(order = 1)
